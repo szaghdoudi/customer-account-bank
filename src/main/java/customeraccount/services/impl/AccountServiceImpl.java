@@ -16,6 +16,7 @@ public class AccountServiceImpl implements AccountService {
         this.accountRepository = accountRepository;
     }
 
+    @Override
     public void deposit(Long accountId, BigDecimal amount) {
         validateBeforeDeposit(accountId, amount);
         Account account = accountRepository.findById(accountId);
@@ -24,9 +25,33 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
+    @Override
+    public void withdrawal(Long accountId, BigDecimal amount) {
+        validateBeforeWithdrawal(accountId, amount);
+        Account account = accountRepository.findById(accountId);
+        account.setBalance(account.getBalance().subtract(amount));
+        accountRepository.save(account);
+    }
+
     private void validateBeforeDeposit(Long accountId, BigDecimal amount) {
         validateAmount(amount);
         verifyAccountStatus(accountId);
+
+    }
+
+
+    private void validateBeforeWithdrawal(Long accountId, BigDecimal amount) {
+        validateAmount(amount);
+        verifyAccountStatus(accountId);
+        verifyBalanceStatus(accountId, amount);
+    }
+
+    private void verifyBalanceStatus(Long accountId, BigDecimal amount) {
+        Account account = accountRepository.findById(accountId);
+        BigDecimal balance = account.getBalance() == null ? BigDecimal.ZERO : account.getBalance();
+        if (amount.compareTo(balance) == 1) {
+            throw new InvalidAmountException("You dont have enough balance, current balance: " + balance);
+        }
     }
 
     private void verifyAccountStatus(Long accountId) {
@@ -36,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
 
     private void validateAmount(BigDecimal amount) {
         if (Objects.isNull(amount) || amount.signum() != 1) {
-            throw new InvalidAmountException("Amount must be greater that 0 :" + amount);
+            throw new InvalidAmountException("Amount must be greater that 0, amount: " + amount);
         }
     }
 
