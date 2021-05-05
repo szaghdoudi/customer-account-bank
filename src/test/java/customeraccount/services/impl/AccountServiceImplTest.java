@@ -120,7 +120,6 @@ class AccountServiceImplTest {
 
     }
 
-
     @Test
     void givenValidAmount_withdrawalAccount_willSubstractFromBalance() {
         Long accountId = 1L;

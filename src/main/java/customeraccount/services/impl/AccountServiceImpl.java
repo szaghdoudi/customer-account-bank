@@ -33,6 +33,12 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
+    @Override
+    public Account getAccount(Long accountId) {
+        return accountRepository.findById(accountId);
+    }
+
+
     private void validateBeforeDeposit(Long accountId, BigDecimal amount) {
         validateAmount(amount);
         verifyAccountStatus(accountId);

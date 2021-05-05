@@ -1,10 +1,17 @@
 package customeraccount.services;
 
+import customeraccount.domain.Account;
+
 import java.math.BigDecimal;
 
 public interface AccountService {
 
-    public void deposit(Long accountId, BigDecimal amount);
+    void deposit(Long accountId, BigDecimal amount);
 
-    public void withdrawal(Long accountId, BigDecimal amount);
+    void withdrawal(Long accountId, BigDecimal amount);
+
+    Account getAccount(Long accountId);
+
+
+
 }
